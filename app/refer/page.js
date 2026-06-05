@@ -34,11 +34,13 @@ const STEPS = [
   {
     key: "friendPhone",
     type: "tel",
+    optional: true,
     question: "And their phone number?",
-    desc: "A direct line helps us reach them. Include the country code if it's outside the US.",
-    label: "Their phone number",
+    desc: "Optional. A direct line helps us reach them faster, but you can skip this and just hit submit.",
+    label: "Their phone number (optional)",
     placeholder: "(555) 123-4567",
-    validate: (v) => (v.replace(/[^\d]/g, "").length >= 7 ? "" : "Enter a valid phone number."),
+    validate: (v) =>
+      v.trim() === "" || v.replace(/[^\d]/g, "").length >= 7 ? "" : "Enter a valid phone number, or leave it blank.",
   },
 ];
 
@@ -162,6 +164,7 @@ export default function ReferPage() {
               <div className="field">
                 <label htmlFor={current.key}>{current.label}</label>
                 <input
+                  key={current.key}
                   id={current.key}
                   type={current.type}
                   value={values[current.key]}

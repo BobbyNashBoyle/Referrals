@@ -24,7 +24,10 @@ export async function POST(request) {
   if (!EMAIL_RE.test(referrerEmail)) return Response.json({ error: "Invalid referrer email." }, { status: 400 });
   if (friendName.length < 2) return Response.json({ error: "Invalid friend name." }, { status: 400 });
   if (!EMAIL_RE.test(friendEmail)) return Response.json({ error: "Invalid friend email." }, { status: 400 });
-  if (friendPhone.replace(/[^\d]/g, "").length < 7) return Response.json({ error: "Invalid friend phone." }, { status: 400 });
+  if (friendPhone && friendPhone.replace(/[^\d]/g, "").length < 7)
+    return Response.json({ error: "Invalid friend phone." }, { status: 400 });
+
+  const phoneDisplay = friendPhone || "Not provided";
 
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.REFERRAL_NOTIFY_EMAIL;
@@ -45,7 +48,7 @@ export async function POST(request) {
     "Their referral:",
     `  Name:  ${friendName}`,
     `  Email: ${friendEmail}`,
-    `  Phone: ${friendPhone}`,
+    `  Phone: ${phoneDisplay}`,
     "",
     `Submitted: ${submittedAt}`,
   ].join("\n");
@@ -59,7 +62,7 @@ export async function POST(request) {
         <tr><td colspan="2" style="padding:18px 0 6px;font-weight:600">Their referral</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Name</td><td style="padding:8px 0">${friendName}</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Email</td><td style="padding:8px 0"><a href="mailto:${friendEmail}">${friendEmail}</a></td></tr>
-        <tr><td style="padding:8px 0;color:#5a7498">Phone</td><td style="padding:8px 0"><a href="tel:${friendPhone}">${friendPhone}</a></td></tr>
+        <tr><td style="padding:8px 0;color:#5a7498">Phone</td><td style="padding:8px 0">${friendPhone ? `<a href="tel:${friendPhone}">${friendPhone}</a>` : "Not provided"}</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Submitted</td><td style="padding:8px 0">${submittedAt}</td></tr>
       </table>
     </div>`;
