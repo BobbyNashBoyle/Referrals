@@ -23,6 +23,15 @@ const STEPS = [
     validate: (v) => (v.trim().length >= 2 ? "" : "Enter their full name."),
   },
   {
+    key: "friendCompany",
+    type: "text",
+    question: "Where do they work?",
+    desc: "The company they're at. This helps us tailor the conversation and confirm they're a fit.",
+    label: "Their company",
+    placeholder: "Acme Logistics",
+    validate: (v) => (v.trim().length >= 2 ? "" : "Enter their company."),
+  },
+  {
     key: "friendEmail",
     type: "email",
     question: "What's their email?",
@@ -49,6 +58,7 @@ export default function ReferPage() {
   const [values, setValues] = useState({
     referrerEmail: "",
     friendName: "",
+    friendCompany: "",
     friendEmail: "",
     friendPhone: "",
   });
@@ -134,7 +144,7 @@ export default function ReferPage() {
                 <button
                   className="btn btn-primary"
                   onClick={() => {
-                    setValues({ referrerEmail: values.referrerEmail, friendName: "", friendEmail: "", friendPhone: "" });
+                    setValues({ referrerEmail: values.referrerEmail, friendName: "", friendCompany: "", friendEmail: "", friendPhone: "" });
                     setStep(1);
                     setDone(false);
                   }}

@@ -18,11 +18,13 @@ export async function POST(request) {
 
   const referrerEmail = clean(body.referrerEmail);
   const friendName = clean(body.friendName);
+  const friendCompany = clean(body.friendCompany);
   const friendEmail = clean(body.friendEmail);
   const friendPhone = clean(body.friendPhone);
 
   if (!EMAIL_RE.test(referrerEmail)) return Response.json({ error: "Invalid referrer email." }, { status: 400 });
   if (friendName.length < 2) return Response.json({ error: "Invalid friend name." }, { status: 400 });
+  if (friendCompany.length < 2) return Response.json({ error: "Invalid friend company." }, { status: 400 });
   if (!EMAIL_RE.test(friendEmail)) return Response.json({ error: "Invalid friend email." }, { status: 400 });
   if (friendPhone && friendPhone.replace(/[^\d]/g, "").length < 7)
     return Response.json({ error: "Invalid friend phone." }, { status: 400 });
@@ -46,9 +48,10 @@ export async function POST(request) {
     `Referred by (gift card recipient): ${referrerEmail}`,
     "",
     "Their referral:",
-    `  Name:  ${friendName}`,
-    `  Email: ${friendEmail}`,
-    `  Phone: ${phoneDisplay}`,
+    `  Name:    ${friendName}`,
+    `  Company: ${friendCompany}`,
+    `  Email:   ${friendEmail}`,
+    `  Phone:   ${phoneDisplay}`,
     "",
     `Submitted: ${submittedAt}`,
   ].join("\n");
@@ -61,6 +64,7 @@ export async function POST(request) {
         <tr><td style="padding:8px 0;color:#5a7498;width:160px">Gift card recipient</td><td style="padding:8px 0"><a href="mailto:${referrerEmail}">${referrerEmail}</a></td></tr>
         <tr><td colspan="2" style="padding:18px 0 6px;font-weight:600">Their referral</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Name</td><td style="padding:8px 0">${friendName}</td></tr>
+        <tr><td style="padding:8px 0;color:#5a7498">Company</td><td style="padding:8px 0">${friendCompany}</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Email</td><td style="padding:8px 0"><a href="mailto:${friendEmail}">${friendEmail}</a></td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Phone</td><td style="padding:8px 0">${friendPhone ? `<a href="tel:${friendPhone}">${friendPhone}</a>` : "Not provided"}</td></tr>
         <tr><td style="padding:8px 0;color:#5a7498">Submitted</td><td style="padding:8px 0">${submittedAt}</td></tr>
@@ -73,7 +77,7 @@ export async function POST(request) {
       from,
       to: to.split(",").map((s) => s.trim()),
       replyTo: referrerEmail,
-      subject: `New Nash referral: ${friendName} (via ${referrerEmail})`,
+      subject: `New Nash referral: ${friendName} at ${friendCompany} (via ${referrerEmail})`,
       text,
       html,
     });
